@@ -1,3 +1,70 @@
 ---
-title: "Test"
+title: "STAT 244-SC"
+format: html
 ---
+
+## Introduction
+
+This project investigates the factors that influence the total insurance claim amount using a dataset of over 600 real-world auto insurance claims. We explore how both quantitative variables—such as age, property damage value, and months as a customer—and categorical variables—such as education level, incident type, and incident severity—are related to the claim amount. Our goal is to identify meaningful patterns and potential predictors of high insurance claims, using exploratory data analysis and visualization techniques. This analysis may provide insights into claim behavior that could support better risk assessment and fraud detection strategies.
+
+## Data Visualization
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+fraud <- read.csv("insurance_claims.csv")
+head(fraud)
+```
+
+```{r}
+fraud_new <- select(fraud, months_as_customer, age, number_of_vehicles_involved, bodily_injuries, injury_claim, property_claim, insured_sex, property_damage, insured_education_level, incident_type, incident_severity, total_claim_amount, fraud_reported)
+
+fraud_new <- fraud_new %>% rename(edu_level = insured_education_level, vehicles_involved = number_of_vehicles_involved)
+```
+
+```{r}
+fraud_new <- fraud_new %>% 
+  mutate_if(is.character, as.factor)
+```
+
+```{r}
+fraud_new <- fraud_new %>%
+  mutate(edu_level = as.character(edu_level)) %>%
+  mutate(edu_level = case_when(
+    edu_level %in% c("Masters", "JD", "MD", "PhD") ~ "Advanced Degree",
+    TRUE ~ edu_level
+  )) %>%
+  mutate(edu_level = as.factor(edu_level))
+```
+
+```{r}
+fraud_new_missing <- fraud_new %>% 
+  filter(property_damage == "?")
+
+fraud_new_missing %>% count(edu_level)
+fraud_new_missing %>% count(fraud_new_missing$insured_sex)
+fraud_new_missing %>% count(incident_type)
+fraud_new_missing %>% count(incident_severity)
+```
+
+```{r}
+fraud_new <- fraud_new %>%
+  filter(!apply(fraud_new, 1, function(row) any(grepl("\\?", row))))
+```
+
+```{r}
+fraud_new <- fraud_new %>% 
+  mutate_if(is.character, as.factor)
+```
+
+```{r}
+ggplot(fraud_new, aes(x = total_claim_amount, fill = edu_level)) + 
+  geom_density(alpha = 0.4) + 
+  labs(title = "Density Plot of Total Claim Amount by Education Level",
+       x = "Total Claim Amount",
+       y = "Density") + 
+  theme_minimal() + 
+  theme(legend.title = element_text(size = 12),
+        legend.text = element_text(size = 10))
+```
