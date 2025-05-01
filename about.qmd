@@ -7,8 +7,10 @@ css: custom.css
 
 This is my website! I am a junior student \@ Mount Holyoke College, majoring in statistics and politics.
 
-Hi! My name is Yifei Chen, and I am a junior at Mount Holyoke College. I am interested in machine learning and statistics
+Hi! My name is Yifei Chen, and I am a junior at Mount Holyoke College. I am interested in machine learning and statistics. Love you!
 
 ![My Profile Picture](images/Photo1.jpg){width="200px"}
 
 To contact me, please reach out via [LinkedIn](https://www.linkedin.com/in/yifei-chen-399166259/).
+
+123
