@@ -1,0 +1,12 @@
+/* Change the primary color to blue */
+body {
+    background-color: #f0f0f0;
+}
+
+a {
+    color: #007bff; /* blue */
+}
+
+h1, h2, h3 {
+    color: #007bff; /* blue */
+}
