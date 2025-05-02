@@ -9,7 +9,7 @@ This project investigates the factors that influence the total insurance claim a
 
 ## Data Visualization
 
-```{r}
+```{r message = F, warning = F}
 library(ggplot2)
 library(dplyr)
 
