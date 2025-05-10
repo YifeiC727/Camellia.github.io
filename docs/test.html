@@ -101,6 +101,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -150,8 +179,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#data-visualization" id="toc-data-visualization" class="nav-link" data-scroll-target="#data-visualization">Data Visualization</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul class="collapse">
+  <li><a href="#load-your-data-set-using-the-code-chunk-below." id="toc-load-your-data-set-using-the-code-chunk-below." class="nav-link" data-scroll-target="#load-your-data-set-using-the-code-chunk-below.">Load your data set using the code chunk below.</a></li>
+  </ul></li>
+  <li><a href="#part-2-data-cleaning" id="toc-part-2-data-cleaning" class="nav-link" data-scroll-target="#part-2-data-cleaning">Part 2: Data Cleaning</a>
+  <ul class="collapse">
+  <li><a href="#do-the-variables-have-names-that-are-easy-to-use-in-code" id="toc-do-the-variables-have-names-that-are-easy-to-use-in-code" class="nav-link" data-scroll-target="#do-the-variables-have-names-that-are-easy-to-use-in-code">6. Do the variables have names that are easy to use in code?</a></li>
+  <li><a href="#do-your-quantitative-variables-have-the-correct-types" id="toc-do-your-quantitative-variables-have-the-correct-types" class="nav-link" data-scroll-target="#do-your-quantitative-variables-have-the-correct-types">7. Do your quantitative variables have the correct types</a></li>
+  <li><a href="#do-your-categorical-variables-have-the-type-factor" id="toc-do-your-categorical-variables-have-the-type-factor" class="nav-link" data-scroll-target="#do-your-categorical-variables-have-the-type-factor">8. Do your categorical variables have the type factor?</a></li>
+  <li><a href="#are-there-any-variables-you-need-to-create" id="toc-are-there-any-variables-you-need-to-create" class="nav-link" data-scroll-target="#are-there-any-variables-you-need-to-create">9. Are there any variables you need to create?</a></li>
+  <li><a href="#are-their-any-missing-values" id="toc-are-their-any-missing-values" class="nav-link" data-scroll-target="#are-their-any-missing-values">10. are their any missing values?</a></li>
+  <li><a href="#how-many-observational-units-rows-do-you-have-after-the-previous-step" id="toc-how-many-observational-units-rows-do-you-have-after-the-previous-step" class="nav-link" data-scroll-target="#how-many-observational-units-rows-do-you-have-after-the-previous-step">11. How many observational units (rows) do you have after the previous step?</a></li>
+  </ul></li>
+  <li><a href="#part3-exploratory-data-analysis" id="toc-part3-exploratory-data-analysis" class="nav-link" data-scroll-target="#part3-exploratory-data-analysis">Part3: Exploratory Data Analysis</a>
+  <ul class="collapse">
+  <li><a href="#provide-any-numerical-summaries-that-are-relevant-to-your-research-question." id="toc-provide-any-numerical-summaries-that-are-relevant-to-your-research-question." class="nav-link" data-scroll-target="#provide-any-numerical-summaries-that-are-relevant-to-your-research-question.">1. Provide any numerical summaries that are relevant to your research question.</a></li>
+  <li><a href="#provide-any-visualizations-that-are-relevant-to-your-research-question" id="toc-provide-any-visualizations-that-are-relevant-to-your-research-question" class="nav-link" data-scroll-target="#provide-any-visualizations-that-are-relevant-to-your-research-question">2. Provide any visualizations that are relevant to your research question</a></li>
+  </ul></li>
+  <li><a href="#subset-selection-combine-the-cross-validation-and-backward-seleciton" id="toc-subset-selection-combine-the-cross-validation-and-backward-seleciton" class="nav-link" data-scroll-target="#subset-selection-combine-the-cross-validation-and-backward-seleciton">Subset Selection: Combine the Cross Validation and Backward Seleciton</a>
+  <ul class="collapse">
+  <li><a href="#identify-at-least-p-3-predictors-for-modeling-the-expected-response-ey-of-one-of-your-variables-y." id="toc-identify-at-least-p-3-predictors-for-modeling-the-expected-response-ey-of-one-of-your-variables-y." class="nav-link" data-scroll-target="#identify-at-least-p-3-predictors-for-modeling-the-expected-response-ey-of-one-of-your-variables-y.">Identify at least p = 3 predictors for modeling the expected response E(Y) of one of your variables Y.</a></li>
+  <li><a href="#implement-backward-subset-selection" id="toc-implement-backward-subset-selection" class="nav-link" data-scroll-target="#implement-backward-subset-selection">Implement backward subset selection</a></li>
+  <li><a href="#backward-selection" id="toc-backward-selection" class="nav-link" data-scroll-target="#backward-selection">Backward Selection</a></li>
+  </ul></li>
+  <li><a href="#cross-validation-with-2-models" id="toc-cross-validation-with-2-models" class="nav-link" data-scroll-target="#cross-validation-with-2-models">Cross Validation with 2 models</a>
+  <ul class="collapse">
+  <li><a href="#write-a-brief-introduction-to-cross-validation-which-includes-relevant-mathematical-notation." id="toc-write-a-brief-introduction-to-cross-validation-which-includes-relevant-mathematical-notation." class="nav-link" data-scroll-target="#write-a-brief-introduction-to-cross-validation-which-includes-relevant-mathematical-notation.">Write a brief introduction to cross validation which includes relevant mathematical notation.</a></li>
+  <li><a href="#what-linear-models-are-you-considering-based-on-your-research-question-pick-at-least-two-models-to-compare." id="toc-what-linear-models-are-you-considering-based-on-your-research-question-pick-at-least-two-models-to-compare." class="nav-link" data-scroll-target="#what-linear-models-are-you-considering-based-on-your-research-question-pick-at-least-two-models-to-compare.">What linear models are you considering based on your research question? Pick at least two models to compare.</a></li>
+  <li><a href="#implement-k-fold-cross-validation-for-k-10." id="toc-implement-k-fold-cross-validation-for-k-10." class="nav-link" data-scroll-target="#implement-k-fold-cross-validation-for-k-10.">Implement k-fold cross validation for k = 10.</a></li>
+  <li><a href="#k-639-and-5" id="toc-k-639-and-5" class="nav-link" data-scroll-target="#k-639-and-5">k = 639 and 5</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -180,15 +238,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>This project investigates the factors that influence the total insurance claim amount using a dataset of over 600 real-world auto insurance claims. We explore how both quantitative variables—such as age, property damage value, and months as a customer—and categorical variables—such as education level, incident type, and incident severity—are related to the claim amount. Our goal is to identify meaningful patterns and potential predictors of high insurance claims, using exploratory data analysis and visualization techniques. This analysis may provide insights into claim behavior that could support better risk assessment and fraud detection strategies.</p>
-</section>
-<section id="data-visualization" class="level2">
-<h2 class="anchored" data-anchor-id="data-visualization">Data Visualization</h2>
+<div id="pdf-embed">
+<iframe src="report.pdf" width="100%" height="600px">
+</iframe>
+</div>
+<section id="load-your-data-set-using-the-code-chunk-below." class="level3">
+<h3 class="anchored" data-anchor-id="load-your-data-set-using-the-code-chunk-below.">Load your data set using the code chunk below.</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>fraud <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"insurance_claims.csv"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fraud)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fraud <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"insurance_claims.csv"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fraud)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  months_as_customer age policy_number policy_bind_date policy_state policy_csl
 1                328  48        521585       2014-10-17           OH    250/500
@@ -262,29 +321,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 6              Y    NA</code></pre>
 </div>
 </div>
+</section>
+</section>
+<section id="part-2-data-cleaning" class="level2">
+<h2 class="anchored" data-anchor-id="part-2-data-cleaning">Part 2: Data Cleaning</h2>
+<section id="do-the-variables-have-names-that-are-easy-to-use-in-code" class="level3">
+<h3 class="anchored" data-anchor-id="do-the-variables-have-names-that-are-easy-to-use-in-code">6. Do the variables have names that are easy to use in code?</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fraud_new <span class="ot">&lt;-</span> <span class="fu">select</span>(fraud, months_as_customer, age, number_of_vehicles_involved, bodily_injuries, injury_claim, property_claim, insured_sex, property_damage, insured_education_level, incident_type, incident_severity, total_claim_amount, fraud_reported)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fraud_new <span class="ot">&lt;-</span> fraud_new <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">edu_level =</span> insured_education_level, <span class="at">vehicles_involved =</span> number_of_vehicles_involved)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="do-your-quantitative-variables-have-the-correct-types" class="level3">
+<h3 class="anchored" data-anchor-id="do-your-quantitative-variables-have-the-correct-types">7. Do your quantitative variables have the correct types</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fraud_new <span class="ot">&lt;-</span> fraud_new <span class="sc">%&gt;%</span> </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.character, as.factor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(fraud_new, class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>months_as_customer                age  vehicles_involved    bodily_injuries 
+         "integer"          "integer"          "integer"          "integer" 
+      injury_claim     property_claim        insured_sex    property_damage 
+         "integer"          "integer"        "character"        "character" 
+         edu_level      incident_type  incident_severity total_claim_amount 
+       "character"        "character"        "character"          "integer" 
+    fraud_reported 
+       "character" </code></pre>
+</div>
+</div>
+</section>
+<section id="do-your-categorical-variables-have-the-type-factor" class="level3">
+<h3 class="anchored" data-anchor-id="do-your-categorical-variables-have-the-type-factor">8. Do your categorical variables have the type factor?</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fraud_new <span class="ot">&lt;-</span> fraud_new <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.character, as.factor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fraud_new <span class="ot">&lt;-</span> fraud_new <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">edu_level =</span> <span class="fu">as.character</span>(edu_level)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">edu_level =</span> <span class="fu">case_when</span>(</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    edu_level <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Masters"</span>, <span class="st">"JD"</span>, <span class="st">"MD"</span>, <span class="st">"PhD"</span>) <span class="sc">~</span> <span class="st">"Advanced Degree"</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> edu_level</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">edu_level =</span> <span class="fu">as.factor</span>(edu_level))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(fraud_new, class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="are-there-any-variables-you-need-to-create" class="level3">
+<h3 class="anchored" data-anchor-id="are-there-any-variables-you-need-to-create">9. Are there any variables you need to create?</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fraud_new_missing <span class="ot">&lt;-</span> fraud_new <span class="sc">%&gt;%</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(property_damage <span class="sc">==</span> <span class="st">"?"</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>fraud_new_missing <span class="sc">%&gt;%</span> <span class="fu">count</span>(edu_level)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fraud_new <span class="ot">&lt;-</span> fraud_new <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">edu_level =</span> <span class="fu">case_when</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    edu_level <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Masters"</span>, <span class="st">"JD"</span>, <span class="st">"MD"</span>, <span class="st">"PhD"</span>) <span class="sc">~</span> <span class="st">"Advanced Degree"</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> edu_level</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="are-their-any-missing-values" class="level3">
+<h3 class="anchored" data-anchor-id="are-their-any-missing-values">10. are their any missing values?</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fraud_new_missing <span class="ot">&lt;-</span> fraud_new <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(property_damage <span class="sc">==</span> <span class="st">"?"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>fraud_new_missing <span class="sc">%&gt;%</span> <span class="fu">count</span>(edu_level)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        edu_level   n
 1 Advanced Degree 208
@@ -292,13 +383,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 3         College  40
 4     High School  57</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fraud_new_missing <span class="sc">%&gt;%</span> <span class="fu">count</span>(fraud_new_missing<span class="sc">$</span>insured_sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fraud_new_missing <span class="sc">%&gt;%</span> <span class="fu">count</span>(fraud_new_missing<span class="sc">$</span>insured_sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  fraud_new_missing$insured_sex   n
 1                        FEMALE 199
 2                          MALE 161</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fraud_new_missing <span class="sc">%&gt;%</span> <span class="fu">count</span>(incident_type)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fraud_new_missing <span class="sc">%&gt;%</span> <span class="fu">count</span>(incident_type)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             incident_type   n
 1  Multi-vehicle Collision 152
@@ -306,7 +397,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 3 Single Vehicle Collision 145
 4            Vehicle Theft  32</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fraud_new_missing <span class="sc">%&gt;%</span> <span class="fu">count</span>(incident_severity)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fraud_new_missing <span class="sc">%&gt;%</span> <span class="fu">count</span>(incident_severity)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  incident_severity   n
 1      Major Damage 115
@@ -316,33 +407,683 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fraud_new <span class="ot">&lt;-</span> fraud_new <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">apply</span>(fraud_new, <span class="dv">1</span>, <span class="cf">function</span>(row) <span class="fu">any</span>(<span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">?"</span>, row))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fraud_new <span class="ot">&lt;-</span> fraud_new <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">apply</span>(fraud_new, <span class="dv">1</span>, <span class="cf">function</span>(row) <span class="fu">any</span>(<span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">?"</span>, row))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="how-many-observational-units-rows-do-you-have-after-the-previous-step" class="level3">
+<h3 class="anchored" data-anchor-id="how-many-observational-units-rows-do-you-have-after-the-previous-step">11. How many observational units (rows) do you have after the previous step?</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(fraud_new)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 640</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fraud_new <span class="ot">&lt;-</span> fraud_new <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.character, as.factor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="part3-exploratory-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="part3-exploratory-data-analysis">Part3: Exploratory Data Analysis</h2>
+<section id="provide-any-numerical-summaries-that-are-relevant-to-your-research-question." class="level3">
+<h3 class="anchored" data-anchor-id="provide-any-numerical-summaries-that-are-relevant-to-your-research-question.">1. Provide any numerical summaries that are relevant to your research question.</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">summary</span>(fraud_new<span class="sc">$</span>total_claim_amount))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    100   41925   58500   53137   70848  114920 </code></pre>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fraud_new <span class="ot">&lt;-</span> fraud_new <span class="sc">%&gt;%</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.character, as.factor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(fraud_new<span class="sc">$</span>months_as_customer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "integer"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fraud_new<span class="sc">$</span>months_as_customer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    1.0   115.0   203.0   204.5   277.2   479.0 </code></pre>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fraud_new, <span class="fu">aes</span>(<span class="at">x =</span> total_claim_amount, <span class="at">fill =</span> edu_level)) <span class="sc">+</span> </span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span> </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Density Plot of Total Claim Amount by Education Level"</span>,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Total Claim Amount"</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span> </span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(fraud_new, edu_level)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        edu_level   n
+1 Advanced Degree 365
+2       Associate  90
+3         College  82
+4     High School 103</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggpairs(fraud_new)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="provide-any-visualizations-that-are-relevant-to-your-research-question" class="level3">
+<h3 class="anchored" data-anchor-id="provide-any-visualizations-that-are-relevant-to-your-research-question">2. Provide any visualizations that are relevant to your research question</h3>
+<section id="visualizaiton-of-the-outcome-variable" class="level4">
+<h4 class="anchored" data-anchor-id="visualizaiton-of-the-outcome-variable">Visualizaiton of the outcome variable</h4>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># total_claim visualization</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(fraud_new, <span class="fu">aes</span>(<span class="at">x =</span> total_claim_amount)) <span class="sc">+</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">"lightgreen"</span>, <span class="at">bins =</span> <span class="dv">30</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Histogram of total_claim_amount"</span>) <span class="sc">+</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Amount of the Claims"</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(fraud_new, <span class="fu">aes</span>(<span class="at">x =</span> property_claim)) <span class="sc">+</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">"skyblue"</span>, <span class="at">bins =</span> <span class="dv">30</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Histogram of property_claim"</span>) <span class="sc">+</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Amount of the Claim"</span>)</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(fraud_new, <span class="fu">aes</span>(<span class="at">x =</span> injury_claim)) <span class="sc">+</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">"red"</span>, <span class="at">bins =</span> <span class="dv">30</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Histogram of injury_claim"</span>) <span class="sc">+</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Amount of the Claim"</span>)</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(p1, p2, p3, <span class="at">ncol =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="test_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="test_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="864"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>123</p>
+</section>
+<section id="visualizaiton-of-a-quantitative-predictor" class="level4">
+<h4 class="anchored" data-anchor-id="visualizaiton-of-a-quantitative-predictor">Visualizaiton of a quantitative predictor</h4>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>property_claim_hist <span class="ot">&lt;-</span> <span class="fu">hist</span>(fraud_new<span class="sc">$</span>property_claim,</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Histogram of property_claim"</span>,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"amount of the claim"</span>,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"skyblue"</span>,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">breaks =</span> <span class="dv">30</span>,</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">border =</span> <span class="st">"white"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="visualization-of-a-categorical-predictor" class="level4">
+<h4 class="anchored" data-anchor-id="visualization-of-a-categorical-predictor">Visualization of a categorical predictor</h4>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> fraud_new, <span class="fu">aes</span>(<span class="at">x =</span> edu_level)) <span class="sc">+</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span> </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Count for different education level"</span>,</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Education group"</span>,</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Count"</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Subscribed"</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()<span class="sc">+</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="overlaid-density-plot-for-different-education" class="level4">
+<h4 class="anchored" data-anchor-id="overlaid-density-plot-for-different-education">Overlaid density plot for different education</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fraud_new, <span class="fu">aes</span>(<span class="at">x =</span> total_claim_amount, <span class="at">fill =</span> edu_level)) <span class="sc">+</span> </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.9</span>) <span class="sc">+</span> </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Density Plot of Total Claim Amount by Education Level"</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Total Claim Amount"</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span> </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="k-means-clustering-of-total-claim-amount-k-3" class="level4">
+<h4 class="anchored" data-anchor-id="k-means-clustering-of-total-claim-amount-k-3">K-means Clustering of Total Claim Amount (k = 3)</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#set.seed(123)</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co">#claim_kmeans &lt;- kmeans(fraud_new$total_claim_amount, centers = 3)</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co">#fraud_new$claim_cluster &lt;- as.factor(claim_kmeans$cluster)</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(fraud_new, aes(x = total_claim_amount, fill = claim_cluster)) + </span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="co">#  geom_histogram(bins = 30, alpha = 0.6, position = "identity") +</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  labs(title = "K-means Clustering of Total Claim Amount (k = 3)",</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co">#       x = "Total Claim Amount",</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="co">#       y = "Count") +</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  theme_minimal()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="relationship-betweeen-property-claim-and-total_claim_amount" class="level4">
+<h4 class="anchored" data-anchor-id="relationship-betweeen-property-claim-and-total_claim_amount">Relationship betweeen property claim and total_claim_amount</h4>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> fraud_new, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> total_claim_amount, <span class="at">color =</span> fraud_reported)) <span class="sc">+</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="added-variable-plot" class="level4">
+<h4 class="anchored" data-anchor-id="added-variable-plot">Added Variable Plot</h4>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> bodily_injuries <span class="sc">+</span> vehicles_involved <span class="sc">+</span> months_as_customer <span class="sc">+</span> property_damage <span class="sc">+</span> incident_type <span class="sc">+</span> incident_severity, <span class="at">data =</span> fraud_new)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="fu">avPlots</span>(mod, <span class="at">ask =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-20-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="subset-selection-combine-the-cross-validation-and-backward-seleciton" class="level2">
+<h2 class="anchored" data-anchor-id="subset-selection-combine-the-cross-validation-and-backward-seleciton">Subset Selection: Combine the Cross Validation and Backward Seleciton</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Check if there’s collinearity</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> fraud_new)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>caret<span class="sc">::</span><span class="fu">findLinearCombos</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$linearCombos
+$linearCombos[[1]]
+[1] 10  1  9
 
 
+$remove
+[1] 10</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(<span class="fu">model.matrix</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> fraud_new))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "(Intercept)"                          
+ [2] "months_as_customer"                   
+ [3] "age"                                  
+ [4] "vehicles_involved"                    
+ [5] "bodily_injuries"                      
+ [6] "injury_claim"                         
+ [7] "property_claim"                       
+ [8] "insured_sexMALE"                      
+ [9] "property_damageNO"                    
+[10] "property_damageYES"                   
+[11] "edu_levelAssociate"                   
+[12] "edu_levelCollege"                     
+[13] "edu_levelHigh School"                 
+[14] "incident_typeParked Car"              
+[15] "incident_typeSingle Vehicle Collision"
+[16] "incident_typeVehicle Theft"           
+[17] "incident_severityMinor Damage"        
+[18] "incident_severityTotal Loss"          
+[19] "incident_severityTrivial Damage"      
+[20] "fraud_reportedY"                      </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>fraud_new <span class="ot">&lt;-</span> fraud_new <span class="sc">%&gt;%</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">property_damage =</span> <span class="fu">as.character</span>(property_damage)) <span class="sc">%&gt;%</span>  <span class="co"># transfer into characteres</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">property_damage =</span> <span class="fu">na_if</span>(property_damage, <span class="st">"?"</span>)) <span class="sc">%&gt;%</span>    <span class="co"># delete "?"</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">property_damage =</span> <span class="fu">as.factor</span>(property_damage)) <span class="sc">%&gt;%</span>     <span class="co"># transfer back to factors</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">property_damage =</span> <span class="fu">fct_drop</span>(property_damage))       <span class="co"># remove the factor that haven't been used</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(fraud_new<span class="sc">$</span>property_damage)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "NO"  "YES"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">contrasts =</span> <span class="fu">c</span>(<span class="st">"contr.sum"</span>, <span class="st">"contr.poly"</span>))</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>fraud_new<span class="sc">$</span>property_damage <span class="ot">&lt;-</span> <span class="fu">C</span>(fraud_new<span class="sc">$</span>property_damage, <span class="at">contr =</span> <span class="st">"contr.sum"</span>)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(fraud_new<span class="sc">$</span>property_damage)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Factor w/ 2 levels "NO","YES": 2 1 1 1 1 1 2 2 2 1 ...
+ - attr(*, "contrasts")= chr "contr.sum"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> fraud_new)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>caret<span class="sc">::</span><span class="fu">findLinearCombos</span>(X)  <span class="co"># Return to a empty list</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$linearCombos
+list()
+
+$remove
+NULL</code></pre>
+</div>
+</div>
+<section id="identify-at-least-p-3-predictors-for-modeling-the-expected-response-ey-of-one-of-your-variables-y." class="level3">
+<h3 class="anchored" data-anchor-id="identify-at-least-p-3-predictors-for-modeling-the-expected-response-ey-of-one-of-your-variables-y.">Identify at least p = 3 predictors for modeling the expected response E(Y) of one of your variables Y.</h3>
+<p>The variables we selected are: months_as_customer, age, vehicles_involved, bodily_injuries, injury_claim, property_claim, insured_sex1, property_damage1, edu_level1, edu_level2, edu_level3, incident_type1, incident_type2, incident_type3, incident_severity1, incident_severity2, incident_severity3, fraud_reported1, claim_cluster1, claim_cluster2</p>
+</section>
+<section id="implement-backward-subset-selection" class="level3">
+<h3 class="anchored" data-anchor-id="implement-backward-subset-selection">Implement backward subset selection</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">contrasts =</span> <span class="fu">c</span>(<span class="st">"contr.sum"</span>, <span class="st">"contr.poly"</span>))</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>regfit.bwd <span class="ot">&lt;-</span> <span class="fu">regsubsets</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> fraud_new, <span class="at">nvmax =</span> <span class="dv">18</span>, <span class="at">method =</span> <span class="st">"backward"</span>)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(regfit.bwd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="backward-selection" class="level3">
+<h3 class="anchored" data-anchor-id="backward-selection">Backward Selection</h3>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>num_folds_cv <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>cross_folds_inds_cv <span class="ot">&lt;-</span> caret<span class="sc">::</span><span class="fu">createFolds</span>(<span class="at">y =</span> fraud_new<span class="sc">$</span>total_claim_amount, <span class="at">k =</span> num_folds_cv)</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>result_mse_cv <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">models =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">18</span>,</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">fold_num =</span> <span class="dv">1</span><span class="sc">:</span>num_folds_cv,</span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">train_mse =</span> <span class="cn">NA</span>,</span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">test_mse =</span> <span class="cn">NA</span></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>cv_errors <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">model =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">18</span>, <span class="at">cverr =</span> <span class="cn">NA</span>)</span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Cross-validation loop</span></span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">18</span>) {</span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (fold_num <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_folds_cv) {</span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a>    test_idx <span class="ot">&lt;-</span> cross_folds_inds_cv[[fold_num]]</span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>    fraud_train <span class="ot">&lt;-</span> fraud_new[<span class="sc">-</span>test_idx, ]</span>
+<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a>    fraud_test  <span class="ot">&lt;-</span> fraud_new[test_idx, ]</span>
+<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Construct model matrices (dummy vars handled automatically)</span></span>
+<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a>    X_train <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> fraud_train)</span>
+<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a>    y_train <span class="ot">&lt;-</span> fraud_train<span class="sc">$</span>total_claim_amount</span>
+<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a>    X_test  <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> fraud_test)</span>
+<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a>    y_test  <span class="ot">&lt;-</span> fraud_test<span class="sc">$</span>total_claim_amount</span>
+<span id="cb49-26"><a href="#cb49-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-27"><a href="#cb49-27" aria-hidden="true" tabindex="-1"></a>    coefs <span class="ot">&lt;-</span> <span class="fu">coef</span>(regfit.bwd, i)</span>
+<span id="cb49-28"><a href="#cb49-28" aria-hidden="true" tabindex="-1"></a>    selected_vars <span class="ot">&lt;-</span> <span class="fu">names</span>(coefs)[<span class="fu">names</span>(coefs) <span class="sc">!=</span> <span class="st">"(Intercept)"</span>]</span>
+<span id="cb49-29"><a href="#cb49-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb49-30"><a href="#cb49-30" aria-hidden="true" tabindex="-1"></a>    available_vars <span class="ot">&lt;-</span> <span class="fu">colnames</span>(X_train)</span>
+<span id="cb49-31"><a href="#cb49-31" aria-hidden="true" tabindex="-1"></a>    valid_vars <span class="ot">&lt;-</span> selected_vars[selected_vars <span class="sc">%in%</span> available_vars]</span>
+<span id="cb49-32"><a href="#cb49-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb49-33"><a href="#cb49-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">length</span>(valid_vars) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb49-34"><a href="#cb49-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">warning</span>(<span class="fu">sprintf</span>(<span class="st">"Model %d: No valid variables found"</span>, i))</span>
+<span id="cb49-35"><a href="#cb49-35" aria-hidden="true" tabindex="-1"></a>      <span class="cf">next</span>  <span class="co"># Skip the current iteration</span></span>
+<span id="cb49-36"><a href="#cb49-36" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb49-37"><a href="#cb49-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb49-38"><a href="#cb49-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Subset predictors and convert to data frame</span></span>
+<span id="cb49-39"><a href="#cb49-39" aria-hidden="true" tabindex="-1"></a>    X_train_sub <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(X_train[, selected_vars, <span class="at">drop =</span> <span class="cn">FALSE</span>])</span>
+<span id="cb49-40"><a href="#cb49-40" aria-hidden="true" tabindex="-1"></a>    X_test_sub  <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(X_test[, selected_vars, <span class="at">drop =</span> <span class="cn">FALSE</span>])</span>
+<span id="cb49-41"><a href="#cb49-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb49-42"><a href="#cb49-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add response variable to training data</span></span>
+<span id="cb49-43"><a href="#cb49-43" aria-hidden="true" tabindex="-1"></a>    train_data <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">y_train =</span> y_train, X_train_sub)</span>
+<span id="cb49-44"><a href="#cb49-44" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb49-45"><a href="#cb49-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Fit linear model</span></span>
+<span id="cb49-46"><a href="#cb49-46" aria-hidden="true" tabindex="-1"></a>    red_cv <span class="ot">&lt;-</span> <span class="fu">lm</span>(y_train <span class="sc">~</span> ., <span class="at">data =</span> train_data)</span>
+<span id="cb49-47"><a href="#cb49-47" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb49-48"><a href="#cb49-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Predict - ensure newdata has same column names as training data</span></span>
+<span id="cb49-49"><a href="#cb49-49" aria-hidden="true" tabindex="-1"></a>    pred_train <span class="ot">&lt;-</span> <span class="fu">predict</span>(red_cv, <span class="at">newdata =</span> X_train_sub)</span>
+<span id="cb49-50"><a href="#cb49-50" aria-hidden="true" tabindex="-1"></a>    pred_test  <span class="ot">&lt;-</span> <span class="fu">predict</span>(red_cv, <span class="at">newdata =</span> X_test_sub)</span>
+<span id="cb49-51"><a href="#cb49-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb49-52"><a href="#cb49-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Store MSEs</span></span>
+<span id="cb49-53"><a href="#cb49-53" aria-hidden="true" tabindex="-1"></a>    result_mse_cv<span class="sc">$</span>train_mse[result_mse_cv<span class="sc">$</span>models <span class="sc">==</span> i <span class="sc">&amp;</span> result_mse_cv<span class="sc">$</span>fold_num <span class="sc">==</span> fold_num] <span class="ot">&lt;-</span> <span class="fu">mean</span>((y_train <span class="sc">-</span> pred_train)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb49-54"><a href="#cb49-54" aria-hidden="true" tabindex="-1"></a>    result_mse_cv<span class="sc">$</span>test_mse[result_mse_cv<span class="sc">$</span>models <span class="sc">==</span> i <span class="sc">&amp;</span> result_mse_cv<span class="sc">$</span>fold_num <span class="sc">==</span> fold_num] <span class="ot">&lt;-</span> <span class="fu">mean</span>((y_test <span class="sc">-</span> pred_test)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb49-55"><a href="#cb49-55" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb49-56"><a href="#cb49-56" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb49-57"><a href="#cb49-57" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Average test error for each model size</span></span>
+<span id="cb49-58"><a href="#cb49-58" aria-hidden="true" tabindex="-1"></a>  cv_errors<span class="sc">$</span>cverr[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(result_mse_cv<span class="sc">$</span>test_mse[result_mse_cv<span class="sc">$</span>models <span class="sc">==</span> i])</span>
+<span id="cb49-59"><a href="#cb49-59" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb49-60"><a href="#cb49-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-61"><a href="#cb49-61" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Find the best model</span></span>
+<span id="cb49-62"><a href="#cb49-62" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">which.min</span>(cv_errors<span class="sc">$</span>cverr)</span>
+<span id="cb49-63"><a href="#cb49-63" aria-hidden="true" tabindex="-1"></a>best_vars <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">coef</span>(regfit.bwd, g))</span>
+<span id="cb49-64"><a href="#cb49-64" aria-hidden="true" tabindex="-1"></a>best_vars <span class="ot">&lt;-</span> best_vars[best_vars <span class="sc">!=</span> <span class="st">"(Intercept)"</span>]</span>
+<span id="cb49-65"><a href="#cb49-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-66"><a href="#cb49-66" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"The best model contains"</span>, g, <span class="st">"variables:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The best model contains 7 variables:</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(best_vars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "injury_claim"    "property_claim"  "edu_level3"      "incident_type1" 
+[5] "incident_type2"  "incident_type3"  "fraud_reported1"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>best_coefs <span class="ot">&lt;-</span> <span class="fu">coef</span>(regfit.bwd, g)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Coefficients of the best model:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Coefficients of the best model:</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(best_coefs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    (Intercept)    injury_claim  property_claim      edu_level3  incident_type1 
+    15420.07559         2.08911         1.97732      -926.17207     11497.30861 
+ incident_type2  incident_type3 fraud_reported1 
+   -12287.44067     12978.43432     -1142.09969 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Mean Test MSE of the best model:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Mean Test MSE of the best model:</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cv_errors<span class="sc">$</span>cverr[g])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 67466469</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cv_errors<span class="sc">$</span>model, cv_errors<span class="sc">$</span>cverr, <span class="at">type =</span> <span class="st">"b"</span>, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">col =</span> <span class="st">"blue"</span>,</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Number of Predictors"</span>, <span class="at">ylab =</span> <span class="st">"CV MSE"</span>,</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Cross-Validation Error by Model Size"</span>)</span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> g, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>decode_selected_vars <span class="ot">&lt;-</span> <span class="fu">sapply</span>(selected_vars, <span class="cf">function</span>(var) {</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">grepl</span>(<span class="st">"1|2|3$"</span>, var)) {  <span class="co"># Match the variable name</span></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>    base_var <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">d+$"</span>, <span class="st">""</span>, var)  <span class="co"># extract the original variable name without the number</span></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>    contrast_num <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">sub</span>(<span class="st">".*(</span><span class="sc">\\</span><span class="st">d+)$"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">1"</span>, var))  <span class="co"># extract the number</span></span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>    levels <span class="ot">&lt;-</span> <span class="fu">levels</span>(fraud_new[[base_var]])</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(base_var, <span class="st">" (Contrast: "</span>, levels[contrast_num], <span class="st">" vs others)"</span>)</span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>    var  <span class="co"># keep the continous variables</span></span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(decode_selected_vars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                            months_as_customer 
+                                          "months_as_customer" 
+                                                           age 
+                                                         "age" 
+                                             vehicles_involved 
+                                           "vehicles_involved" 
+                                               bodily_injuries 
+                                             "bodily_injuries" 
+                                                  injury_claim 
+                                                "injury_claim" 
+                                                property_claim 
+                                              "property_claim" 
+                                                  insured_sex1 
+                    "insured_sex (Contrast: FEMALE vs others)" 
+                                              property_damage1 
+                    "property_damage (Contrast: NO vs others)" 
+                                                    edu_level1 
+             "edu_level (Contrast: Advanced Degree vs others)" 
+                                                    edu_level2 
+                   "edu_level (Contrast: Associate vs others)" 
+                                                    edu_level3 
+                     "edu_level (Contrast: College vs others)" 
+                                                incident_type1 
+ "incident_type (Contrast: Multi-vehicle Collision vs others)" 
+                                                incident_type2 
+              "incident_type (Contrast: Parked Car vs others)" 
+                                                incident_type3 
+"incident_type (Contrast: Single Vehicle Collision vs others)" 
+                                            incident_severity1 
+        "incident_severity (Contrast: Major Damage vs others)" 
+                                            incident_severity2 
+        "incident_severity (Contrast: Minor Damage vs others)" 
+                                            incident_severity3 
+          "incident_severity (Contrast: Total Loss vs others)" 
+                                               fraud_reported1 
+                      "fraud_reported (Contrast: N vs others)" </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="cross-validation-with-2-models" class="level2">
+<h2 class="anchored" data-anchor-id="cross-validation-with-2-models">Cross Validation with 2 models</h2>
+<section id="write-a-brief-introduction-to-cross-validation-which-includes-relevant-mathematical-notation." class="level3">
+<h3 class="anchored" data-anchor-id="write-a-brief-introduction-to-cross-validation-which-includes-relevant-mathematical-notation.">Write a brief introduction to cross validation which includes relevant mathematical notation.</h3>
+<p>Cross Validation (CV) is used for the purpose of (1) selection of tuning parameters, (2) variable selections, and (3) assessing the quality of model fit to avoid issues like overfitting.</p>
+<p>In <span class="math inline">\(k\)</span>-fold cross-validation, the dataset is randomly partitioned into <span class="math inline">\(k\)</span> disjoint subsets (folds) of roughly equal size. For each fold <span class="math inline">\(j = 1, 2, \dots, k\)</span>, the model is trained on the data excluding the <span class="math inline">\(j\)</span>-th fold, and the prediction error is computed on the held-out fold. The estimated MSE is predicted by:</p>
+<p><span class="math display">\[\begin{equation}
+\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} \left( y_i - \hat{f}(x_i) \right)^2
+\end{equation}\]</span></p>
+<p>Then, the CV is:</p>
+<p><span class="math display">\[
+\text{CV} = \frac{1}{k} \sum_{i=1}^{k} \text{MSE}_i
+\]</span></p>
+<p>where <span class="math inline">\(k\)</span> is the number of folds you select. For each model, CV helps with estimating and calculating <span class="math inline">\(MSE_{\text{test}}\)</span>. By using CV, we aim to choose models that balance underfitting and overfitting to improve predictive accuracy.</p>
+</section>
+<section id="what-linear-models-are-you-considering-based-on-your-research-question-pick-at-least-two-models-to-compare." class="level3">
+<h3 class="anchored" data-anchor-id="what-linear-models-are-you-considering-based-on-your-research-question-pick-at-least-two-models-to-compare.">What linear models are you considering based on your research question? Pick at least two models to compare.</h3>
+<p>We gathered the linear models based on the backward variable selection results, so there are a total of () model candidates. Here is the list of candidates models we are comparing using CV:</p>
+<p>model A: total_claim_amount ~ age + vehicles_involved + injury_claim model B (full model): total_claim_amount ~ months_as_customer + age + vehicles_involved + bodily_injuries + injury_claim + property_claim + insured_sex + property_damage + edu_level + incident_type + incident_severity + fraud_reported.</p>
+</section>
+<section id="implement-k-fold-cross-validation-for-k-10." class="level3">
+<h3 class="anchored" data-anchor-id="implement-k-fold-cross-validation-for-k-10.">Implement k-fold cross validation for k = 10.</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>num_folds <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>folds <span class="ot">&lt;-</span> <span class="fu">createFolds</span>(fraud_new<span class="sc">$</span>total_claim_amount, <span class="at">k =</span> num_folds)</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a><span class="co">#fraud_new$property_damage &lt;- factor(fraud_new$property_damage, levels = c("Yes", "No"))</span></span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a><span class="co">#levels_pd &lt;- levels(fraud_new$property_damage)</span></span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>factor_vars <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">Filter</span>(is.factor, fraud_new))</span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>factor_levels <span class="ot">&lt;-</span> <span class="fu">lapply</span>(fraud_new[factor_vars], levels)</span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a>mse_results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">fold =</span> <span class="dv">1</span><span class="sc">:</span>num_folds,</span>
+<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_A_mse =</span> <span class="cn">NA</span>,</span>
+<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_B_mse =</span> <span class="cn">NA</span></span>
+<span id="cb64-15"><a href="#cb64-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb64-16"><a href="#cb64-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-17"><a href="#cb64-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_folds) {</span>
+<span id="cb64-18"><a href="#cb64-18" aria-hidden="true" tabindex="-1"></a>  train_data <span class="ot">&lt;-</span> fraud_new[<span class="sc">-</span>folds[[i]], ]</span>
+<span id="cb64-19"><a href="#cb64-19" aria-hidden="true" tabindex="-1"></a>  test_data <span class="ot">&lt;-</span> fraud_new[folds[[i]], ]</span>
+<span id="cb64-20"><a href="#cb64-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb64-21"><a href="#cb64-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (v <span class="cf">in</span> factor_vars) {</span>
+<span id="cb64-22"><a href="#cb64-22" aria-hidden="true" tabindex="-1"></a>    train_data[[v]] <span class="ot">&lt;-</span> <span class="fu">factor</span>(train_data[[v]], <span class="at">levels =</span> factor_levels[[v]])</span>
+<span id="cb64-23"><a href="#cb64-23" aria-hidden="true" tabindex="-1"></a>    test_data[[v]]  <span class="ot">&lt;-</span> <span class="fu">factor</span>(test_data[[v]],  <span class="at">levels =</span> factor_levels[[v]])</span>
+<span id="cb64-24"><a href="#cb64-24" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb64-25"><a href="#cb64-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb64-26"><a href="#cb64-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mod A: simple model</span></span>
+<span id="cb64-27"><a href="#cb64-27" aria-hidden="true" tabindex="-1"></a>  mod_A <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> age <span class="sc">+</span> vehicles_involved <span class="sc">+</span> injury_claim, <span class="at">data =</span> train_data)</span>
+<span id="cb64-28"><a href="#cb64-28" aria-hidden="true" tabindex="-1"></a>  pred_A <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod_A, <span class="at">newdata =</span> test_data)</span>
+<span id="cb64-29"><a href="#cb64-29" aria-hidden="true" tabindex="-1"></a>  mse_results<span class="sc">$</span>model_A_mse[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>((test_data<span class="sc">$</span>total_claim_amount <span class="sc">-</span> pred_A)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb64-30"><a href="#cb64-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb64-31"><a href="#cb64-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mod B: complete model</span></span>
+<span id="cb64-32"><a href="#cb64-32" aria-hidden="true" tabindex="-1"></a>  mod_B <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> train_data)</span>
+<span id="cb64-33"><a href="#cb64-33" aria-hidden="true" tabindex="-1"></a>  pred_B <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod_B, <span class="at">newdata =</span> test_data)</span>
+<span id="cb64-34"><a href="#cb64-34" aria-hidden="true" tabindex="-1"></a>  mse_results<span class="sc">$</span>model_B_mse[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>((test_data<span class="sc">$</span>total_claim_amount <span class="sc">-</span> pred_B)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb64-35"><a href="#cb64-35" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb64-36"><a href="#cb64-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-37"><a href="#cb64-37" aria-hidden="true" tabindex="-1"></a><span class="co"># --- In-sample residuals on full dataset ---</span></span>
+<span id="cb64-38"><a href="#cb64-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Model A</span></span>
+<span id="cb64-39"><a href="#cb64-39" aria-hidden="true" tabindex="-1"></a>mod_A_full <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> age <span class="sc">+</span> vehicles_involved <span class="sc">+</span> injury_claim, <span class="at">data =</span> fraud_new)</span>
+<span id="cb64-40"><a href="#cb64-40" aria-hidden="true" tabindex="-1"></a>resid_A <span class="ot">&lt;-</span> <span class="fu">resid</span>(mod_A_full)</span>
+<span id="cb64-41"><a href="#cb64-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-42"><a href="#cb64-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Model B</span></span>
+<span id="cb64-43"><a href="#cb64-43" aria-hidden="true" tabindex="-1"></a>mod_B_full <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> fraud_new)</span>
+<span id="cb64-44"><a href="#cb64-44" aria-hidden="true" tabindex="-1"></a>resid_B <span class="ot">&lt;-</span> <span class="fu">resid</span>(mod_B_full)</span>
+<span id="cb64-45"><a href="#cb64-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-46"><a href="#cb64-46" aria-hidden="true" tabindex="-1"></a>summary_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb64-47"><a href="#cb64-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Model A"</span>, <span class="st">"Model B"</span>),</span>
+<span id="cb64-48"><a href="#cb64-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">CV_MSE_Mean =</span> <span class="fu">c</span>(<span class="fu">mean</span>(mse_results<span class="sc">$</span>model_A_mse), <span class="fu">mean</span>(mse_results<span class="sc">$</span>model_B_mse)),</span>
+<span id="cb64-49"><a href="#cb64-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">CV_MSE_SD =</span> <span class="fu">c</span>(<span class="fu">sd</span>(mse_results<span class="sc">$</span>model_A_mse), <span class="fu">sd</span>(mse_results<span class="sc">$</span>model_B_mse)),</span>
+<span id="cb64-50"><a href="#cb64-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">InSample_MSE =</span> <span class="fu">c</span>(</span>
+<span id="cb64-51"><a href="#cb64-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> age <span class="sc">+</span> vehicles_involved <span class="sc">+</span> injury_claim, <span class="at">data =</span> fraud_new))<span class="sc">^</span><span class="dv">2</span>),</span>
+<span id="cb64-52"><a href="#cb64-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> fraud_new))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb64-53"><a href="#cb64-53" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb64-54"><a href="#cb64-54" aria-hidden="true" tabindex="-1"></a>  <span class="at">InSample_SD =</span> <span class="fu">c</span>(<span class="fu">sd</span>(resid_A<span class="sc">^</span><span class="dv">2</span>),   <span class="fu">sd</span>(resid_B<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb64-55"><a href="#cb64-55" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb64-56"><a href="#cb64-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-57"><a href="#cb64-57" aria-hidden="true" tabindex="-1"></a>summary_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Model CV_MSE_Mean CV_MSE_SD InSample_MSE InSample_SD
+1 Model A   233767567  40917704    229954703   322843034
+2 Model B    69081551  11571068     65065375   107280574</code></pre>
+</div>
+</div>
+</section>
+<section id="k-639-and-5" class="level3">
+<h3 class="anchored" data-anchor-id="k-639-and-5">k = 639 and 5</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="do">##CV using different value of k:</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="do">##k = n=1</span></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>num_folds <span class="ot">&lt;-</span> <span class="dv">639</span></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>folds <span class="ot">&lt;-</span> <span class="fu">createFolds</span>(fraud_new<span class="sc">$</span>total_claim_amount, <span class="at">k =</span> num_folds)</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a><span class="co">#fraud_new$property_damage &lt;- factor(fraud_new$property_damage, levels = c("Yes", "No"))</span></span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a><span class="co">#levels_pd &lt;- levels(fraud_new$property_damage)</span></span>
+<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a>factor_vars <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">Filter</span>(is.factor, fraud_new))</span>
+<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a>factor_levels <span class="ot">&lt;-</span> <span class="fu">lapply</span>(fraud_new[factor_vars], levels)</span>
+<span id="cb66-12"><a href="#cb66-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-13"><a href="#cb66-13" aria-hidden="true" tabindex="-1"></a>mse_results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb66-14"><a href="#cb66-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">fold =</span> <span class="dv">1</span><span class="sc">:</span>num_folds,</span>
+<span id="cb66-15"><a href="#cb66-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_A_mse =</span> <span class="cn">NA</span>,</span>
+<span id="cb66-16"><a href="#cb66-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_B_mse =</span> <span class="cn">NA</span></span>
+<span id="cb66-17"><a href="#cb66-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb66-18"><a href="#cb66-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-19"><a href="#cb66-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_folds) {</span>
+<span id="cb66-20"><a href="#cb66-20" aria-hidden="true" tabindex="-1"></a>  train_data <span class="ot">&lt;-</span> fraud_new[<span class="sc">-</span>folds[[i]], ]</span>
+<span id="cb66-21"><a href="#cb66-21" aria-hidden="true" tabindex="-1"></a>  test_data <span class="ot">&lt;-</span> fraud_new[folds[[i]], ]</span>
+<span id="cb66-22"><a href="#cb66-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-23"><a href="#cb66-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (v <span class="cf">in</span> factor_vars) {</span>
+<span id="cb66-24"><a href="#cb66-24" aria-hidden="true" tabindex="-1"></a>    train_data[[v]] <span class="ot">&lt;-</span> <span class="fu">factor</span>(train_data[[v]], <span class="at">levels =</span> factor_levels[[v]])</span>
+<span id="cb66-25"><a href="#cb66-25" aria-hidden="true" tabindex="-1"></a>    test_data[[v]]  <span class="ot">&lt;-</span> <span class="fu">factor</span>(test_data[[v]],  <span class="at">levels =</span> factor_levels[[v]])</span>
+<span id="cb66-26"><a href="#cb66-26" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-27"><a href="#cb66-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-28"><a href="#cb66-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mod A: simple model</span></span>
+<span id="cb66-29"><a href="#cb66-29" aria-hidden="true" tabindex="-1"></a>  mod_A <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> age <span class="sc">+</span> vehicles_involved <span class="sc">+</span> injury_claim, <span class="at">data =</span> train_data)</span>
+<span id="cb66-30"><a href="#cb66-30" aria-hidden="true" tabindex="-1"></a>  pred_A <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod_A, <span class="at">newdata =</span> test_data)</span>
+<span id="cb66-31"><a href="#cb66-31" aria-hidden="true" tabindex="-1"></a>  mse_results<span class="sc">$</span>model_A_mse[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>((test_data<span class="sc">$</span>total_claim_amount <span class="sc">-</span> pred_A)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb66-32"><a href="#cb66-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-33"><a href="#cb66-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mod B: complete model</span></span>
+<span id="cb66-34"><a href="#cb66-34" aria-hidden="true" tabindex="-1"></a>  mod_B <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> train_data)</span>
+<span id="cb66-35"><a href="#cb66-35" aria-hidden="true" tabindex="-1"></a>  pred_B <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod_B, <span class="at">newdata =</span> test_data)</span>
+<span id="cb66-36"><a href="#cb66-36" aria-hidden="true" tabindex="-1"></a>  mse_results<span class="sc">$</span>model_B_mse[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>((test_data<span class="sc">$</span>total_claim_amount <span class="sc">-</span> pred_B)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb66-37"><a href="#cb66-37" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb66-38"><a href="#cb66-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-39"><a href="#cb66-39" aria-hidden="true" tabindex="-1"></a><span class="co"># --- In-sample residuals on full dataset ---</span></span>
+<span id="cb66-40"><a href="#cb66-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Model A</span></span>
+<span id="cb66-41"><a href="#cb66-41" aria-hidden="true" tabindex="-1"></a>mod_A_full <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> age <span class="sc">+</span> vehicles_involved <span class="sc">+</span> injury_claim, <span class="at">data =</span> fraud_new)</span>
+<span id="cb66-42"><a href="#cb66-42" aria-hidden="true" tabindex="-1"></a>resid_A <span class="ot">&lt;-</span> <span class="fu">resid</span>(mod_A_full)</span>
+<span id="cb66-43"><a href="#cb66-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-44"><a href="#cb66-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Model B</span></span>
+<span id="cb66-45"><a href="#cb66-45" aria-hidden="true" tabindex="-1"></a>mod_B_full <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> fraud_new)</span>
+<span id="cb66-46"><a href="#cb66-46" aria-hidden="true" tabindex="-1"></a>resid_B <span class="ot">&lt;-</span> <span class="fu">resid</span>(mod_B_full)</span>
+<span id="cb66-47"><a href="#cb66-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-48"><a href="#cb66-48" aria-hidden="true" tabindex="-1"></a>summary_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb66-49"><a href="#cb66-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Model A"</span>, <span class="st">"Model B"</span>),</span>
+<span id="cb66-50"><a href="#cb66-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">CV_MSE_Mean =</span> <span class="fu">c</span>(<span class="fu">mean</span>(mse_results<span class="sc">$</span>model_A_mse), <span class="fu">mean</span>(mse_results<span class="sc">$</span>model_B_mse)),</span>
+<span id="cb66-51"><a href="#cb66-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">CV_MSE_SD =</span> <span class="fu">c</span>(<span class="fu">sd</span>(mse_results<span class="sc">$</span>model_A_mse), <span class="fu">sd</span>(mse_results<span class="sc">$</span>model_B_mse)),</span>
+<span id="cb66-52"><a href="#cb66-52" aria-hidden="true" tabindex="-1"></a>  <span class="at">InSample_MSE =</span> <span class="fu">c</span>(</span>
+<span id="cb66-53"><a href="#cb66-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> age <span class="sc">+</span> vehicles_involved <span class="sc">+</span> injury_claim, <span class="at">data =</span> fraud_new))<span class="sc">^</span><span class="dv">2</span>),</span>
+<span id="cb66-54"><a href="#cb66-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> fraud_new))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb66-55"><a href="#cb66-55" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb66-56"><a href="#cb66-56" aria-hidden="true" tabindex="-1"></a>  <span class="at">InSample_SD =</span> <span class="fu">c</span>(<span class="fu">sd</span>(resid_A<span class="sc">^</span><span class="dv">2</span>),   <span class="fu">sd</span>(resid_B<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb66-57"><a href="#cb66-57" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb66-58"><a href="#cb66-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-59"><a href="#cb66-59" aria-hidden="true" tabindex="-1"></a>summary_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Model CV_MSE_Mean CV_MSE_SD InSample_MSE InSample_SD
+1 Model A   232967258 327286923    229954703   322843034
+2 Model B    68867218 113618315     65065375   107280574</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="do">## k = 5</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>num_folds <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>folds <span class="ot">&lt;-</span> <span class="fu">createFolds</span>(fraud_new<span class="sc">$</span>total_claim_amount, <span class="at">k =</span> num_folds)</span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a><span class="co">#fraud_new$property_damage &lt;- factor(fraud_new$property_damage, levels = c("Yes", "No"))</span></span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a><span class="co">#levels_pd &lt;- levels(fraud_new$property_damage)</span></span>
+<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-9"><a href="#cb68-9" aria-hidden="true" tabindex="-1"></a>factor_vars <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">Filter</span>(is.factor, fraud_new))</span>
+<span id="cb68-10"><a href="#cb68-10" aria-hidden="true" tabindex="-1"></a>factor_levels <span class="ot">&lt;-</span> <span class="fu">lapply</span>(fraud_new[factor_vars], levels)</span>
+<span id="cb68-11"><a href="#cb68-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-12"><a href="#cb68-12" aria-hidden="true" tabindex="-1"></a>mse_results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb68-13"><a href="#cb68-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">fold =</span> <span class="dv">1</span><span class="sc">:</span>num_folds,</span>
+<span id="cb68-14"><a href="#cb68-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_A_mse =</span> <span class="cn">NA</span>,</span>
+<span id="cb68-15"><a href="#cb68-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_B_mse =</span> <span class="cn">NA</span></span>
+<span id="cb68-16"><a href="#cb68-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb68-17"><a href="#cb68-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-18"><a href="#cb68-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_folds) {</span>
+<span id="cb68-19"><a href="#cb68-19" aria-hidden="true" tabindex="-1"></a>  train_data <span class="ot">&lt;-</span> fraud_new[<span class="sc">-</span>folds[[i]], ]</span>
+<span id="cb68-20"><a href="#cb68-20" aria-hidden="true" tabindex="-1"></a>  test_data <span class="ot">&lt;-</span> fraud_new[folds[[i]], ]</span>
+<span id="cb68-21"><a href="#cb68-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb68-22"><a href="#cb68-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (v <span class="cf">in</span> factor_vars) {</span>
+<span id="cb68-23"><a href="#cb68-23" aria-hidden="true" tabindex="-1"></a>    train_data[[v]] <span class="ot">&lt;-</span> <span class="fu">factor</span>(train_data[[v]], <span class="at">levels =</span> factor_levels[[v]])</span>
+<span id="cb68-24"><a href="#cb68-24" aria-hidden="true" tabindex="-1"></a>    test_data[[v]]  <span class="ot">&lt;-</span> <span class="fu">factor</span>(test_data[[v]],  <span class="at">levels =</span> factor_levels[[v]])</span>
+<span id="cb68-25"><a href="#cb68-25" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb68-26"><a href="#cb68-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb68-27"><a href="#cb68-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mod A: simple model</span></span>
+<span id="cb68-28"><a href="#cb68-28" aria-hidden="true" tabindex="-1"></a>  mod_A <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> age <span class="sc">+</span> vehicles_involved <span class="sc">+</span> injury_claim, <span class="at">data =</span> train_data)</span>
+<span id="cb68-29"><a href="#cb68-29" aria-hidden="true" tabindex="-1"></a>  pred_A <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod_A, <span class="at">newdata =</span> test_data)</span>
+<span id="cb68-30"><a href="#cb68-30" aria-hidden="true" tabindex="-1"></a>  mse_results<span class="sc">$</span>model_A_mse[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>((test_data<span class="sc">$</span>total_claim_amount <span class="sc">-</span> pred_A)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb68-31"><a href="#cb68-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb68-32"><a href="#cb68-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mod B: complete model</span></span>
+<span id="cb68-33"><a href="#cb68-33" aria-hidden="true" tabindex="-1"></a>  mod_B <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> train_data)</span>
+<span id="cb68-34"><a href="#cb68-34" aria-hidden="true" tabindex="-1"></a>  pred_B <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod_B, <span class="at">newdata =</span> test_data)</span>
+<span id="cb68-35"><a href="#cb68-35" aria-hidden="true" tabindex="-1"></a>  mse_results<span class="sc">$</span>model_B_mse[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>((test_data<span class="sc">$</span>total_claim_amount <span class="sc">-</span> pred_B)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb68-36"><a href="#cb68-36" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb68-37"><a href="#cb68-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-38"><a href="#cb68-38" aria-hidden="true" tabindex="-1"></a><span class="co"># --- In-sample residuals on full dataset ---</span></span>
+<span id="cb68-39"><a href="#cb68-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Model A</span></span>
+<span id="cb68-40"><a href="#cb68-40" aria-hidden="true" tabindex="-1"></a>mod_A_full <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> age <span class="sc">+</span> vehicles_involved <span class="sc">+</span> injury_claim, <span class="at">data =</span> fraud_new)</span>
+<span id="cb68-41"><a href="#cb68-41" aria-hidden="true" tabindex="-1"></a>resid_A <span class="ot">&lt;-</span> <span class="fu">resid</span>(mod_A_full)</span>
+<span id="cb68-42"><a href="#cb68-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-43"><a href="#cb68-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Model B</span></span>
+<span id="cb68-44"><a href="#cb68-44" aria-hidden="true" tabindex="-1"></a>mod_B_full <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> fraud_new)</span>
+<span id="cb68-45"><a href="#cb68-45" aria-hidden="true" tabindex="-1"></a>resid_B <span class="ot">&lt;-</span> <span class="fu">resid</span>(mod_B_full)</span>
+<span id="cb68-46"><a href="#cb68-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-47"><a href="#cb68-47" aria-hidden="true" tabindex="-1"></a>summary_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb68-48"><a href="#cb68-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Model A"</span>, <span class="st">"Model B"</span>),</span>
+<span id="cb68-49"><a href="#cb68-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">CV_MSE_Mean =</span> <span class="fu">c</span>(<span class="fu">mean</span>(mse_results<span class="sc">$</span>model_A_mse), <span class="fu">mean</span>(mse_results<span class="sc">$</span>model_B_mse)),</span>
+<span id="cb68-50"><a href="#cb68-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">CV_MSE_SD =</span> <span class="fu">c</span>(<span class="fu">sd</span>(mse_results<span class="sc">$</span>model_A_mse), <span class="fu">sd</span>(mse_results<span class="sc">$</span>model_B_mse)),</span>
+<span id="cb68-51"><a href="#cb68-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">InSample_MSE =</span> <span class="fu">c</span>(</span>
+<span id="cb68-52"><a href="#cb68-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> age <span class="sc">+</span> vehicles_involved <span class="sc">+</span> injury_claim, <span class="at">data =</span> fraud_new))<span class="sc">^</span><span class="dv">2</span>),</span>
+<span id="cb68-53"><a href="#cb68-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(total_claim_amount <span class="sc">~</span> ., <span class="at">data =</span> fraud_new))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb68-54"><a href="#cb68-54" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb68-55"><a href="#cb68-55" aria-hidden="true" tabindex="-1"></a>  <span class="at">InSample_SD =</span> <span class="fu">c</span>(<span class="fu">sd</span>(resid_A<span class="sc">^</span><span class="dv">2</span>),   <span class="fu">sd</span>(resid_B<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb68-56"><a href="#cb68-56" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb68-57"><a href="#cb68-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-58"><a href="#cb68-58" aria-hidden="true" tabindex="-1"></a>summary_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Model CV_MSE_Mean CV_MSE_SD InSample_MSE InSample_SD
+1 Model A   233223160  19807450    229954703   322843034
+2 Model B    68274384   8752033     65065375   107280574</code></pre>
+</div>
+</div>
+
+
+</section>
 </section>
 
 </main> <!-- /main -->

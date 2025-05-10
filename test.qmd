@@ -7,15 +7,36 @@ format: html
 
 This project investigates the factors that influence the total insurance claim amount using a dataset of over 600 real-world auto insurance claims. We explore how both quantitative variables—such as age, property damage value, and months as a customer—and categorical variables—such as education level, incident type, and incident severity—are related to the claim amount. Our goal is to identify meaningful patterns and potential predictors of high insurance claims, using exploratory data analysis and visualization techniques. This analysis may provide insights into claim behavior that could support better risk assessment and fraud detection strategies.
 
-## Data Visualization
+::: {#pdf-embed}
+<iframe src="report.pdf" width="100%" height="600px">
 
-```{r message = F, warning = F}
-library(ggplot2)
+</iframe>
+:::
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = TRUE)
+library(readr)
+library(purrr)
 library(dplyr)
+library(ggplot2)
+library(gridExtra)
+library(mosaic)
+library(gmodels)
+library(Sleuth3)
+library(GGally)
+```
 
+### Load your data set using the code chunk below.
+
+```{r}
 fraud <- read.csv("insurance_claims.csv")
+
 head(fraud)
 ```
+
+## Part 2: Data Cleaning
+
+### 6. Do the variables have names that are easy to use in code?
 
 ```{r}
 fraud_new <- select(fraud, months_as_customer, age, number_of_vehicles_involved, bodily_injuries, injury_claim, property_claim, insured_sex, property_damage, insured_education_level, incident_type, incident_severity, total_claim_amount, fraud_reported)
@@ -23,20 +44,34 @@ fraud_new <- select(fraud, months_as_customer, age, number_of_vehicles_involved,
 fraud_new <- fraud_new %>% rename(edu_level = insured_education_level, vehicles_involved = number_of_vehicles_involved)
 ```
 
+### 7. Do your quantitative variables have the correct types
+
+```{r}
+sapply(fraud_new, class)
+```
+
+### 8. Do your categorical variables have the type factor?
+
 ```{r}
 fraud_new <- fraud_new %>% 
   mutate_if(is.character, as.factor)
 ```
 
+```{r, results='hide'}
+sapply(fraud_new, class)
+```
+
+### 9. Are there any variables you need to create?
+
 ```{r}
 fraud_new <- fraud_new %>%
-  mutate(edu_level = as.character(edu_level)) %>%
   mutate(edu_level = case_when(
     edu_level %in% c("Masters", "JD", "MD", "PhD") ~ "Advanced Degree",
     TRUE ~ edu_level
-  )) %>%
-  mutate(edu_level = as.factor(edu_level))
+  ))
 ```
+
+### 10. are their any missing values?
 
 ```{r}
 fraud_new_missing <- fraud_new %>% 
@@ -53,14 +88,97 @@ fraud_new <- fraud_new %>%
   filter(!apply(fraud_new, 1, function(row) any(grepl("\\?", row))))
 ```
 
+### 11. How many observational units (rows) do you have after the previous step?
+
 ```{r}
+nrow(fraud_new)
+
 fraud_new <- fraud_new %>% 
   mutate_if(is.character, as.factor)
 ```
 
+## Part3: Exploratory Data Analysis
+
+### 1. Provide any numerical summaries that are relevant to your research question.
+
+```{r}
+print(summary(fraud_new$total_claim_amount))
+```
+
+```{r}
+class(fraud_new$months_as_customer)
+summary(fraud_new$months_as_customer)
+```
+
+```{r}
+count(fraud_new, edu_level)
+```
+
+```{r, fig.align='center',message = FALSE, warning = FALSE}
+#ggpairs(fraud_new)
+```
+
+### 2. Provide any visualizations that are relevant to your research question
+
+#### Visualizaiton of the outcome variable
+
+\vspace{12pt}
+
+```{r, fig.align='center',fig.width=9, fig.height=4.5}
+# total_claim visualization
+p1 <- ggplot(fraud_new, aes(x = total_claim_amount)) +
+  geom_histogram(fill = "lightgreen", bins = 30, color = "white") +
+  ggtitle("Histogram of total_claim_amount") +
+  xlab("Amount of the Claims")
+
+p2 <- ggplot(fraud_new, aes(x = property_claim)) +
+  geom_histogram(fill = "skyblue", bins = 30, color = "white") +
+  ggtitle("Histogram of property_claim") +
+  xlab("Amount of the Claim")
+
+p3 <- ggplot(fraud_new, aes(x = injury_claim)) +
+  geom_histogram(fill = "red", bins = 30, color = "white") +
+  ggtitle("Histogram of injury_claim") +
+  xlab("Amount of the Claim")
+
+grid.arrange(p1, p2, p3, ncol = 3)
+```
+
+#### Visualizaiton of a quantitative predictor
+
+\vspace{12pt}
+
+```{r,fig.align='center', fig.width=6, fig.height=4.5}
+property_claim_hist <- hist(fraud_new$property_claim,
+     main = "Histogram of property_claim",
+     xlab = "amount of the claim",
+     col = "skyblue",
+     breaks = 30,
+     border = "white")
+```
+
+#### Visualization of a categorical predictor
+
+\vspace{12pt}
+
+```{r, fig.align='center', fig.width=5, fig.height=4}
+ggplot(data = fraud_new, aes(x = edu_level)) + 
+  geom_bar(position = "dodge") + 
+  labs(
+    title = "Count for different education level",
+    x = "Education group",
+    y = "Count",
+    fill = "Subscribed"
+  ) + 
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+#### Overlaid density plot for different education
+
 ```{r}
 ggplot(fraud_new, aes(x = total_claim_amount, fill = edu_level)) + 
-  geom_density(alpha = 0.4) + 
+  geom_density(alpha = 0.9) + 
   labs(title = "Density Plot of Total Claim Amount by Education Level",
        x = "Total Claim Amount",
        y = "Density") + 
@@ -69,4 +187,401 @@ ggplot(fraud_new, aes(x = total_claim_amount, fill = edu_level)) +
         legend.text = element_text(size = 10))
 ```
 
-123
+#### K-means Clustering of Total Claim Amount (k = 3)
+
+```{r}
+#set.seed(123)
+
+#claim_kmeans <- kmeans(fraud_new$total_claim_amount, centers = 3)
+
+#fraud_new$claim_cluster <- as.factor(claim_kmeans$cluster)
+
+#ggplot(fraud_new, aes(x = total_claim_amount, fill = claim_cluster)) + 
+#  geom_histogram(bins = 30, alpha = 0.6, position = "identity") +
+#  labs(title = "K-means Clustering of Total Claim Amount (k = 3)",
+#       x = "Total Claim Amount",
+#       y = "Count") +
+#  theme_minimal()
+```
+
+#### Relationship betweeen property claim and total_claim_amount
+
+\vspace{12pt}
+
+```{r, fig.align='center', fig.width=6, fig.height=5}
+ggplot(data = fraud_new, mapping = aes(x = age, y = total_claim_amount, color = fraud_reported)) +
+  geom_point()+
+  theme_bw()
+```
+
+#### Added Variable Plot
+
+```{r, fig.align='center', fig.width=6, fig.height=5}
+library(car)
+
+mod <- lm(total_claim_amount ~ bodily_injuries + vehicles_involved + months_as_customer + property_damage + incident_type + incident_severity, data = fraud_new)
+
+avPlots(mod, ask = FALSE)
+```
+
+## Subset Selection: Combine the Cross Validation and Backward Seleciton
+
+```{r}
+library(caret)
+library(stringr)
+library(leaps)
+```
+
+Check if there's collinearity
+
+```{r}
+X <- model.matrix(total_claim_amount ~ ., data = fraud_new)
+caret::findLinearCombos(X)
+colnames(model.matrix(total_claim_amount ~ ., data = fraud_new))
+```
+
+```{r}
+library(forcats)
+
+fraud_new <- fraud_new %>%
+  mutate(property_damage = as.character(property_damage)) %>%  # transfer into characteres
+  mutate(property_damage = na_if(property_damage, "?")) %>%    # delete "?"
+  mutate(property_damage = as.factor(property_damage)) %>%     # transfer back to factors
+  mutate(property_damage = fct_drop(property_damage))       # remove the factor that haven't been used
+
+levels(fraud_new$property_damage)
+```
+
+```{r}
+options(contrasts = c("contr.sum", "contr.poly"))
+fraud_new$property_damage <- C(fraud_new$property_damage, contr = "contr.sum")
+str(fraud_new$property_damage)
+
+X <- model.matrix(total_claim_amount ~ ., data = fraud_new)
+caret::findLinearCombos(X)  # Return to a empty list
+```
+
+### Identify at least p = 3 predictors for modeling the expected response E(Y) of one of your variables Y.
+
+The variables we selected are: months_as_customer, age, vehicles_involved, bodily_injuries, injury_claim, property_claim, insured_sex1, property_damage1, edu_level1, edu_level2, edu_level3, incident_type1, incident_type2, incident_type3, incident_severity1, incident_severity2, incident_severity3, fraud_reported1, claim_cluster1, claim_cluster2
+
+### Implement backward subset selection
+
+```{r, message = FALSE, results='hide'}
+set.seed(123)
+options(contrasts = c("contr.sum", "contr.poly"))
+regfit.bwd <- regsubsets(total_claim_amount ~ ., data = fraud_new, nvmax = 18, method = "backward")
+
+summary(regfit.bwd)
+```
+
+### Backward Selection
+
+```{r, fig.align='center', fig.width=6, fig.height=5}
+set.seed(123)
+
+num_folds_cv <- 10
+cross_folds_inds_cv <- caret::createFolds(y = fraud_new$total_claim_amount, k = num_folds_cv)
+
+result_mse_cv <- expand.grid(
+  models = 1:18,
+  fold_num = 1:num_folds_cv,
+  train_mse = NA,
+  test_mse = NA
+)
+cv_errors <- data.frame(model = 1:18, cverr = NA)
+
+# 3. Cross-validation loop
+for (i in 1:18) {
+  for (fold_num in 1:num_folds_cv) {
+    test_idx <- cross_folds_inds_cv[[fold_num]]
+    fraud_train <- fraud_new[-test_idx, ]
+    fraud_test  <- fraud_new[test_idx, ]
+    
+    # Construct model matrices (dummy vars handled automatically)
+    X_train <- model.matrix(total_claim_amount ~ ., data = fraud_train)
+    y_train <- fraud_train$total_claim_amount
+    X_test  <- model.matrix(total_claim_amount ~ ., data = fraud_test)
+    y_test  <- fraud_test$total_claim_amount
+
+    coefs <- coef(regfit.bwd, i)
+    selected_vars <- names(coefs)[names(coefs) != "(Intercept)"]
+    
+    available_vars <- colnames(X_train)
+    valid_vars <- selected_vars[selected_vars %in% available_vars]
+    
+    if (length(valid_vars) == 0) {
+      warning(sprintf("Model %d: No valid variables found", i))
+      next  # Skip the current iteration
+    }
+    
+    # Subset predictors and convert to data frame
+    X_train_sub <- as.data.frame(X_train[, selected_vars, drop = FALSE])
+    X_test_sub  <- as.data.frame(X_test[, selected_vars, drop = FALSE])
+    
+    # Add response variable to training data
+    train_data <- cbind(y_train = y_train, X_train_sub)
+    
+    # Fit linear model
+    red_cv <- lm(y_train ~ ., data = train_data)
+    
+    # Predict - ensure newdata has same column names as training data
+    pred_train <- predict(red_cv, newdata = X_train_sub)
+    pred_test  <- predict(red_cv, newdata = X_test_sub)
+    
+    # Store MSEs
+    result_mse_cv$train_mse[result_mse_cv$models == i & result_mse_cv$fold_num == fold_num] <- mean((y_train - pred_train)^2)
+    result_mse_cv$test_mse[result_mse_cv$models == i & result_mse_cv$fold_num == fold_num] <- mean((y_test - pred_test)^2)
+  }
+  
+  # Average test error for each model size
+  cv_errors$cverr[i] <- mean(result_mse_cv$test_mse[result_mse_cv$models == i])
+}
+
+# 4. Find the best model
+g <- which.min(cv_errors$cverr)
+best_vars <- names(coef(regfit.bwd, g))
+best_vars <- best_vars[best_vars != "(Intercept)"]
+
+cat("The best model contains", g, "variables:\n")
+print(best_vars)
+
+best_coefs <- coef(regfit.bwd, g)
+cat("Coefficients of the best model:\n")
+print(best_coefs)
+
+cat("\nMean Test MSE of the best model:\n")
+print(cv_errors$cverr[g])
+
+plot(cv_errors$model, cv_errors$cverr, type = "b", pch = 16, col = "blue",
+     xlab = "Number of Predictors", ylab = "CV MSE",
+     main = "Cross-Validation Error by Model Size")
+abline(v = g, col = "red", lty = 2)
+```
+
+```{r}
+decode_selected_vars <- sapply(selected_vars, function(var) {
+  if (grepl("1|2|3$", var)) {  # Match the variable name
+    base_var <- sub("\\d+$", "", var)  # extract the original variable name without the number
+    contrast_num <- as.numeric(sub(".*(\\d+)$", "\\1", var))  # extract the number
+    levels <- levels(fraud_new[[base_var]])
+    paste0(base_var, " (Contrast: ", levels[contrast_num], " vs others)")
+  } else {
+    var  # keep the continous variables
+  }
+})
+print(decode_selected_vars)
+```
+
+## Cross Validation with 2 models
+
+### Write a brief introduction to cross validation which includes relevant mathematical notation.
+
+Cross Validation (CV) is used for the purpose of (1) selection of tuning parameters, (2) variable selections, and (3) assessing the quality of model fit to avoid issues like overfitting.
+
+In $k$-fold cross-validation, the dataset is randomly partitioned into $k$ disjoint subsets (folds) of roughly equal size. For each fold $j = 1, 2, \dots, k$, the model is trained on the data excluding the $j$-th fold, and the prediction error is computed on the held-out fold. The estimated MSE is predicted by:
+
+\begin{equation}
+\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} \left( y_i - \hat{f}(x_i) \right)^2
+\end{equation}
+
+Then, the CV is:
+
+$$
+\text{CV} = \frac{1}{k} \sum_{i=1}^{k} \text{MSE}_i
+$$
+
+where $k$ is the number of folds you select. For each model, CV helps with estimating and calculating $MSE_{\text{test}}$. By using CV, we aim to choose models that balance underfitting and overfitting to improve predictive accuracy.
+
+### What linear models are you considering based on your research question? Pick at least two models to compare.
+
+We gathered the linear models based on the backward variable selection results, so there are a total of () model candidates. Here is the list of candidates models we are comparing using CV:
+
+model A: total_claim_amount \~ age + vehicles_involved + injury_claim model B (full model): total_claim_amount \~ months_as_customer + age + vehicles_involved + bodily_injuries + injury_claim + property_claim + insured_sex + property_damage + edu_level + incident_type + incident_severity + fraud_reported.
+
+### Implement k-fold cross validation for k = 10.
+
+```{r}
+set.seed(123)
+num_folds <- 10
+folds <- createFolds(fraud_new$total_claim_amount, k = num_folds)
+
+#fraud_new$property_damage <- factor(fraud_new$property_damage, levels = c("Yes", "No"))
+#levels_pd <- levels(fraud_new$property_damage)
+
+factor_vars <- names(Filter(is.factor, fraud_new))
+factor_levels <- lapply(fraud_new[factor_vars], levels)
+
+mse_results <- data.frame(
+  fold = 1:num_folds,
+  model_A_mse = NA,
+  model_B_mse = NA
+)
+
+for (i in 1:num_folds) {
+  train_data <- fraud_new[-folds[[i]], ]
+  test_data <- fraud_new[folds[[i]], ]
+  
+  for (v in factor_vars) {
+    train_data[[v]] <- factor(train_data[[v]], levels = factor_levels[[v]])
+    test_data[[v]]  <- factor(test_data[[v]],  levels = factor_levels[[v]])
+  }
+  
+  # mod A: simple model
+  mod_A <- lm(total_claim_amount ~ age + vehicles_involved + injury_claim, data = train_data)
+  pred_A <- predict(mod_A, newdata = test_data)
+  mse_results$model_A_mse[i] <- mean((test_data$total_claim_amount - pred_A)^2)
+  
+  # mod B: complete model
+  mod_B <- lm(total_claim_amount ~ ., data = train_data)
+  pred_B <- predict(mod_B, newdata = test_data)
+  mse_results$model_B_mse[i] <- mean((test_data$total_claim_amount - pred_B)^2)
+}
+
+# --- In-sample residuals on full dataset ---
+# Model A
+mod_A_full <- lm(total_claim_amount ~ age + vehicles_involved + injury_claim, data = fraud_new)
+resid_A <- resid(mod_A_full)
+
+# Model B
+mod_B_full <- lm(total_claim_amount ~ ., data = fraud_new)
+resid_B <- resid(mod_B_full)
+
+summary_table <- data.frame(
+  Model = c("Model A", "Model B"),
+  CV_MSE_Mean = c(mean(mse_results$model_A_mse), mean(mse_results$model_B_mse)),
+  CV_MSE_SD = c(sd(mse_results$model_A_mse), sd(mse_results$model_B_mse)),
+  InSample_MSE = c(
+    mean(resid(lm(total_claim_amount ~ age + vehicles_involved + injury_claim, data = fraud_new))^2),
+    mean(resid(lm(total_claim_amount ~ ., data = fraud_new))^2)
+  ),
+  InSample_SD = c(sd(resid_A^2),   sd(resid_B^2))
+)
+
+summary_table
+```
+
+### k = 639 and 5
+
+```{r}
+##CV using different value of k:
+##k = n=1
+set.seed(123)
+num_folds <- 639
+folds <- createFolds(fraud_new$total_claim_amount, k = num_folds)
+
+#fraud_new$property_damage <- factor(fraud_new$property_damage, levels = c("Yes", "No"))
+#levels_pd <- levels(fraud_new$property_damage)
+
+factor_vars <- names(Filter(is.factor, fraud_new))
+factor_levels <- lapply(fraud_new[factor_vars], levels)
+
+mse_results <- data.frame(
+  fold = 1:num_folds,
+  model_A_mse = NA,
+  model_B_mse = NA
+)
+
+for (i in 1:num_folds) {
+  train_data <- fraud_new[-folds[[i]], ]
+  test_data <- fraud_new[folds[[i]], ]
+  
+  for (v in factor_vars) {
+    train_data[[v]] <- factor(train_data[[v]], levels = factor_levels[[v]])
+    test_data[[v]]  <- factor(test_data[[v]],  levels = factor_levels[[v]])
+  }
+  
+  # mod A: simple model
+  mod_A <- lm(total_claim_amount ~ age + vehicles_involved + injury_claim, data = train_data)
+  pred_A <- predict(mod_A, newdata = test_data)
+  mse_results$model_A_mse[i] <- mean((test_data$total_claim_amount - pred_A)^2)
+  
+  # mod B: complete model
+  mod_B <- lm(total_claim_amount ~ ., data = train_data)
+  pred_B <- predict(mod_B, newdata = test_data)
+  mse_results$model_B_mse[i] <- mean((test_data$total_claim_amount - pred_B)^2)
+}
+
+# --- In-sample residuals on full dataset ---
+# Model A
+mod_A_full <- lm(total_claim_amount ~ age + vehicles_involved + injury_claim, data = fraud_new)
+resid_A <- resid(mod_A_full)
+
+# Model B
+mod_B_full <- lm(total_claim_amount ~ ., data = fraud_new)
+resid_B <- resid(mod_B_full)
+
+summary_table <- data.frame(
+  Model = c("Model A", "Model B"),
+  CV_MSE_Mean = c(mean(mse_results$model_A_mse), mean(mse_results$model_B_mse)),
+  CV_MSE_SD = c(sd(mse_results$model_A_mse), sd(mse_results$model_B_mse)),
+  InSample_MSE = c(
+    mean(resid(lm(total_claim_amount ~ age + vehicles_involved + injury_claim, data = fraud_new))^2),
+    mean(resid(lm(total_claim_amount ~ ., data = fraud_new))^2)
+  ),
+  InSample_SD = c(sd(resid_A^2),   sd(resid_B^2))
+)
+
+summary_table
+```
+
+```{r}
+## k = 5
+set.seed(123)
+num_folds <- 5
+folds <- createFolds(fraud_new$total_claim_amount, k = num_folds)
+
+#fraud_new$property_damage <- factor(fraud_new$property_damage, levels = c("Yes", "No"))
+#levels_pd <- levels(fraud_new$property_damage)
+
+factor_vars <- names(Filter(is.factor, fraud_new))
+factor_levels <- lapply(fraud_new[factor_vars], levels)
+
+mse_results <- data.frame(
+  fold = 1:num_folds,
+  model_A_mse = NA,
+  model_B_mse = NA
+)
+
+for (i in 1:num_folds) {
+  train_data <- fraud_new[-folds[[i]], ]
+  test_data <- fraud_new[folds[[i]], ]
+  
+  for (v in factor_vars) {
+    train_data[[v]] <- factor(train_data[[v]], levels = factor_levels[[v]])
+    test_data[[v]]  <- factor(test_data[[v]],  levels = factor_levels[[v]])
+  }
+  
+  # mod A: simple model
+  mod_A <- lm(total_claim_amount ~ age + vehicles_involved + injury_claim, data = train_data)
+  pred_A <- predict(mod_A, newdata = test_data)
+  mse_results$model_A_mse[i] <- mean((test_data$total_claim_amount - pred_A)^2)
+  
+  # mod B: complete model
+  mod_B <- lm(total_claim_amount ~ ., data = train_data)
+  pred_B <- predict(mod_B, newdata = test_data)
+  mse_results$model_B_mse[i] <- mean((test_data$total_claim_amount - pred_B)^2)
+}
+
+# --- In-sample residuals on full dataset ---
+# Model A
+mod_A_full <- lm(total_claim_amount ~ age + vehicles_involved + injury_claim, data = fraud_new)
+resid_A <- resid(mod_A_full)
+
+# Model B
+mod_B_full <- lm(total_claim_amount ~ ., data = fraud_new)
+resid_B <- resid(mod_B_full)
+
+summary_table <- data.frame(
+  Model = c("Model A", "Model B"),
+  CV_MSE_Mean = c(mean(mse_results$model_A_mse), mean(mse_results$model_B_mse)),
+  CV_MSE_SD = c(sd(mse_results$model_A_mse), sd(mse_results$model_B_mse)),
+  InSample_MSE = c(
+    mean(resid(lm(total_claim_amount ~ age + vehicles_involved + injury_claim, data = fraud_new))^2),
+    mean(resid(lm(total_claim_amount ~ ., data = fraud_new))^2)
+  ),
+  InSample_SD = c(sd(resid_A^2),   sd(resid_B^2))
+)
+
+summary_table
+```
